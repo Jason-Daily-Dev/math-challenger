@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import sys
 
@@ -17,6 +18,8 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 print(f"Using database URL: {DATABASE_URL}")
 engine = create_async_engine(DATABASE_URL, echo=True)
 AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+SEED_FILE = os.path.join(os.path.dirname(__file__), "questions-answers.json")
 
 
 async def create_missing_tables():
@@ -40,28 +43,30 @@ async def record_exists(session: AsyncSession, model, **kwargs) -> bool:
 
 async def seed_data():
     async with AsyncSessionLocal() as session:
-        # Seed question and answers
-        question_text = "What is 2 + 2?"
-        if not await record_exists(session, Question, question=question_text):
+        with open(SEED_FILE, "r") as f:
+            data = json.load(f)
+
+        for item in data:
+            question_text = item["question"]
+            if await record_exists(session, Question, question=question_text):
+                print(f"Question '{question_text}' already exists. Skipping.")
+                continue
+
             q = Question(question=question_text)
             session.add(q)
             await session.flush()
 
-            answers = [
-                Answer(question_id=q.id, answer="3", correct=False),
-                Answer(question_id=q.id, answer="4", correct=True),
-                Answer(question_id=q.id, answer="5", correct=False),
-                Answer(question_id=q.id, answer="22", correct=False),
+            answer_objs = [
+                Answer(question_id=q.id, answer=a["answer"], correct=a["correct"])
+                for a in item["answers"]
             ]
-            session.add_all(answers)
-        else:
-            print("Question already exists. Skipping.")
+            session.add_all(answer_objs)
 
-        # Seed user
+        # Seed test user
         if not await record_exists(session, User, username="test_user"):
             session.add(User(username="test_user"))
         else:
-            print("User already exists. Skipping.")
+            print("User 'test_user' already exists. Skipping.")
 
         await session.commit()
 

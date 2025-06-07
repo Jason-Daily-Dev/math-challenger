@@ -1,0 +1,92 @@
+[
+  {
+    "question": "What is the derivative of x^2?",
+    "answers": [
+      {"answer": "2x", "correct": true},
+      {"answer": "x", "correct": false},
+      {"answer": "x^2", "correct": false},
+      {"answer": "2", "correct": false}
+    ]
+  },
+  {
+    "question": "What is the capital of Canada?",
+    "answers": [
+      {"answer": "Toronto", "correct": false},
+      {"answer": "Vancouver", "correct": false},
+      {"answer": "Ottawa", "correct": true},
+      {"answer": "Montreal", "correct": false}
+    ]
+  },
+  {
+    "question": "Which element has the chemical symbol 'O'?",
+    "answers": [
+      {"answer": "Gold", "correct": false},
+      {"answer": "Oxygen", "correct": true},
+      {"answer": "Osmium", "correct": false},
+      {"answer": "Oxide", "correct": false}
+    ]
+  },
+  {
+    "question": "Solve for x: 2x - 4 = 10",
+    "answers": [
+      {"answer": "3", "correct": false},
+      {"answer": "6", "correct": true},
+      {"answer": "7", "correct": false},
+      {"answer": "5", "correct": false}
+    ]
+  },
+  {
+    "question": "Which planet is known as the Red Planet?",
+    "answers": [
+      {"answer": "Mars", "correct": true},
+      {"answer": "Jupiter", "correct": false},
+      {"answer": "Saturn", "correct": false},
+      {"answer": "Venus", "correct": false}
+    ]
+  },
+  {
+    "question": "What is the square root of 144?",
+    "answers": [
+      {"answer": "14", "correct": false},
+      {"answer": "12", "correct": true},
+      {"answer": "10", "correct": false},
+      {"answer": "16", "correct": false}
+    ]
+  },
+  {
+    "question": "What is the main function of red blood cells?",
+    "answers": [
+      {"answer": "Fight infection", "correct": false},
+      {"answer": "Carry oxygen", "correct": true},
+      {"answer": "Clot blood", "correct": false},
+      {"answer": "Digest food", "correct": false}
+    ]
+  },
+  {
+    "question": "Who wrote 'Romeo and Juliet'?",
+    "answers": [
+      {"answer": "Charles Dickens", "correct": false},
+      {"answer": "William Shakespeare", "correct": true},
+      {"answer": "Jane Austen", "correct": false},
+      {"answer": "Mark Twain", "correct": false}
+    ]
+  },
+  {
+    "question": "What is the Pythagorean Theorem?",
+    "answers": [
+      {"answer": "a^2 + b^2 = c^2", "correct": true},
+      {"answer": "a + b = c", "correct": false},
+      {"answer": "a^2 - b^2 = c^2", "correct": false},
+      {"answer": "ab = c", "correct": false}
+    ]
+  },
+  {
+    "question": "Which gas do plants absorb from the atmosphere?",
+    "answers": [
+      {"answer": "Oxygen", "correct": false},
+      {"answer": "Nitrogen", "correct": false},
+      {"answer": "Carbon Dioxide", "correct": true},
+      {"answer": "Hydrogen", "correct": false}
+    ]
+  }
+]
