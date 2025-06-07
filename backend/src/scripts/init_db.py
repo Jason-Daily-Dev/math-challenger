@@ -1,5 +1,9 @@
 import asyncio
 import os
+import sys
+
+# Add backend/src to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../src")))
 
 from app.models import Answer, Base, Question, User
 from dotenv import load_dotenv
