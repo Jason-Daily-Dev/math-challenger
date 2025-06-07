@@ -1,4 +1,3 @@
-from .question import Answer, Question
-from .user import User
+from .question import Answer, Base, Question, User
 
-__all__ = ["Question", "Answer", "User"]
+__all__ = ["Question", "Answer", "User", "Base"]
