@@ -9,7 +9,6 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
-  Alert,
   Stack,
   createTheme,
   ThemeProvider,
@@ -101,10 +100,10 @@ interface Question {
 const Quiz: React.FC = () => {
   const [question, setQuestion] = useState<Question | null>(null)
   const [selected, setSelected] = useState<number | null>(null)
-  const [feedback, setFeedback] = useState<string | null>(null)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('left')
-  const [questionHistory, setQuestionHistory] = useState<{id: number, correct: boolean | null}[]>([])
+  const [questionHistory, setQuestionHistory] = useState<{ id: number, correct: boolean | null }[]>([])
+  const [currentAnswered, setCurrentAnswered] = useState<{ id: number, correct: boolean | null } | null>(null)
   const [showSlide, setShowSlide] = useState(true)
 
   const fetchQuestion = async () => {
@@ -115,6 +114,12 @@ const Quiz: React.FC = () => {
       // Set direction for next slide
       setSlideDirection('right')
       
+      // If we have a current answered question, add it to history before moving on
+      if (currentAnswered) {
+        setQuestionHistory(prev => [...prev, currentAnswered])
+        setCurrentAnswered(null)
+      }
+
       // Wait a bit for exit animation
       setTimeout(async () => {
         const response = await fetch('/api/questions/random', {
@@ -129,15 +134,7 @@ const Quiz: React.FC = () => {
         
         setQuestion(data)
         setSelected(null)
-        setFeedback(null)
-        
-        if (isCorrect !== null) {
-          // Add current question to history before moving to next
-          if (question) {
-            setQuestionHistory(prev => [...prev, {id: question.id, correct: isCorrect}])
-          }
-          setIsCorrect(null)
-        }
+        setIsCorrect(null) // Reset isCorrect when fetching a new question
 
         // Start entry animation
         setShowSlide(true)
@@ -155,7 +152,9 @@ const Quiz: React.FC = () => {
     if (!question || selected === null) return
     const correct = question.answers.find(a => a.id === selected)?.correct
     setIsCorrect(!!correct)
-    setFeedback(correct ? '✅ Correct!' : '❌ Try again.')
+    
+    // Store current answer but don't update history yet
+    setCurrentAnswered({ id: question.id, correct: !!correct })
   }
 
   return (
@@ -177,9 +176,9 @@ const Quiz: React.FC = () => {
         }}
       >
         {/* Progress bar and stats */}
-        <Box 
+        <Box
           sx={{
-            width: '90%', 
+            width: '90%',
             maxWidth: 600,
             mb: 2,
             mt: -8,
@@ -192,7 +191,7 @@ const Quiz: React.FC = () => {
             <Box display="flex" alignItems="center">
               <CheckCircleIcon sx={{ color: '#4caf50', mr: 1 }} />
               <Typography color="#f0f0f5">
-                {questionHistory.filter(q => q.correct).length}
+                {questionHistory.filter(q => q.correct).length + (currentAnswered?.correct ? 1 : 0)}
               </Typography>
             </Box>
             <Typography color="#f0f0f5">
@@ -201,15 +200,22 @@ const Quiz: React.FC = () => {
             <Box display="flex" alignItems="center">
               <CancelIcon sx={{ color: '#f44336', mr: 1 }} />
               <Typography color="#f0f0f5">
-                {questionHistory.filter(q => q.correct === false).length}
+                {questionHistory.filter(q => q.correct === false).length + (currentAnswered?.correct === false ? 1 : 0)}
               </Typography>
             </Box>
           </Box>
-          
-          <LinearProgress 
-            variant="determinate" 
-            value={questionHistory.length > 0 ? (questionHistory.filter(q => q.correct).length / questionHistory.length) * 100 : 0} 
-            sx={{ 
+
+          <LinearProgress
+            variant="determinate"
+            value={
+              // Calculate progress including currentAnswered
+              (() => {
+                const correctCount = questionHistory.filter(q => q.correct).length + (currentAnswered?.correct ? 1 : 0);
+                const totalQuestions = questionHistory.length + (currentAnswered ? 1 : 0);
+                return totalQuestions > 0 ? (correctCount / totalQuestions) * 100 : 0;
+              })()
+            }
+            sx={{
               height: 8,
               borderRadius: 4,
               backgroundColor: 'rgba(255,255,255,0.1)',
@@ -221,15 +227,15 @@ const Quiz: React.FC = () => {
         </Box>
 
         {/* Question card with slide animation */}
-        <Slide 
-          direction={slideDirection} 
-          in={showSlide} 
-          mountOnEnter 
+        <Slide
+          direction={slideDirection}
+          in={showSlide}
+          mountOnEnter
           unmountOnExit
           timeout={300}
         >
-          <Card sx={{ 
-            maxWidth: 600, 
+          <Card sx={{
+            maxWidth: 600,
             width: '90%',
             padding: 4,
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
@@ -240,10 +246,10 @@ const Quiz: React.FC = () => {
             <CardContent>
               {question && question.answers ? (
                 <Stack spacing={4}>
-                  <Typography 
-                    variant="h5" 
+                  <Typography
+                    variant="h5"
                     fontWeight="bold"
-                    sx={{ 
+                    sx={{
                       color: '#f0f0f5',
                       textAlign: 'center',
                       marginBottom: 2
@@ -255,41 +261,65 @@ const Quiz: React.FC = () => {
                   <FormControl fullWidth>
                     <RadioGroup
                       value={selected}
-                      onChange={(e) => setSelected(parseInt(e.target.value))}
+                      onChange={(e) => isCorrect === null && setSelected(parseInt(e.target.value))}
                     >
-                      {question.answers.map((ans) => (
-                        <FormControlLabel
-                          key={ans.id}
-                          value={ans.id}
-                          control={
-                            <Radio 
-                              sx={{ 
-                                '& .MuiSvgIcon-root': {
-                                  fontSize: 28,
-                                  color: '#0070c9'
-                                }
-                              }} 
-                            />
-                          }
-                          label={
-                            <Typography sx={{ fontSize: '1.2rem', color: '#f0f0f5' }}>
-                              {ans.answer}
-                            </Typography>
-                          }
-                          sx={{ 
-                            marginY: 1.5,
-                            '&:hover': {
-                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                              borderRadius: '8px'
+                      {question.answers.map((ans) => {
+                        const isSelected = selected === ans.id;
+                        const showCorrectIcon = isCorrect !== null && ans.correct;
+                        const showIncorrectIcon = isCorrect !== null && isSelected && !ans.correct;
+                        
+                        return (
+                          <FormControlLabel
+                            key={ans.id}
+                            value={ans.id}
+                            disabled={isCorrect !== null}
+                            control={
+                              <Radio 
+                                sx={{ 
+                                  '& .MuiSvgIcon-root': {
+                                    fontSize: 28,
+                                    color: showCorrectIcon ? '#4caf50' : 
+                                           showIncorrectIcon ? '#f44336' : 
+                                           '#0070c9'
+                                  }
+                                }} 
+                              />
                             }
-                          }}
-                        />
-                      ))}
+                            label={
+                              <Box display="flex" alignItems="center">
+                                <Typography sx={{ fontSize: '1.2rem', color: '#f0f0f5' }}>
+                                  {ans.answer}
+                                </Typography>
+                                {showCorrectIcon && (
+                                  <CheckCircleIcon sx={{ color: '#4caf50', ml: 2 }} />
+                                )}
+                                {showIncorrectIcon && (
+                                  <CancelIcon sx={{ color: '#f44336', ml: 2 }} />
+                                )}
+                              </Box>
+                            }
+                            sx={{ 
+                              marginY: 1.5,
+                              backgroundColor: showCorrectIcon ? 'rgba(76, 175, 80, 0.1)' : 
+                                              showIncorrectIcon ? 'rgba(244, 67, 54, 0.1)' : 
+                                              'transparent',
+                              borderRadius: '8px',
+                              '&:hover': {
+                                backgroundColor: isCorrect === null ? 
+                                  'rgba(255, 255, 255, 0.05)' : 
+                                  showCorrectIcon ? 'rgba(76, 175, 80, 0.15)' : 
+                                  showIncorrectIcon ? 'rgba(244, 67, 54, 0.15)' : 
+                                  'transparent',
+                              }
+                            }}
+                          />
+                        );
+                      })}
                     </RadioGroup>
                   </FormControl>
 
-                  <Box 
-                    display="flex" 
+                  <Box
+                    display="flex"
                     justifyContent="space-between"
                     mt={2}
                   >
@@ -309,7 +339,8 @@ const Quiz: React.FC = () => {
                           backgroundColor: '#0077CC'
                         },
                         '&:disabled': {
-                          color: 'rgba(255, 255, 255, 0.5)'
+                          color: 'rgba(255, 255, 255, 0.5)',
+                          backgroundColor: 'rgba(0, 112, 201, 0.3)'
                         }
                       }}
                     >
@@ -317,37 +348,24 @@ const Quiz: React.FC = () => {
                     </Button>
                     <Button 
                       onClick={fetchQuestion}
+                      disabled={isCorrect === null}
                       sx={{ 
                         padding: '12px 24px',
                         borderRadius: '8px',
                         textTransform: 'none',
                         fontSize: '1.1rem',
-                        color: '#0070c9',
+                        color: isCorrect !== null ? '#0070c9' : 'rgba(0, 112, 201, 0.3)',
                         '&:hover': {
-                          backgroundColor: 'rgba(0, 112, 201, 0.1)'
+                          backgroundColor: isCorrect !== null ? 'rgba(0, 112, 201, 0.1)' : 'transparent'
+                        },
+                        '&:disabled': {
+                          color: 'rgba(255, 255, 255, 0.3)'
                         }
                       }}
                     >
                       Next
                     </Button>
                   </Box>
-
-                  {feedback && (
-                    <Alert 
-                      severity={isCorrect ? 'success' : 'error'}
-                      sx={{ 
-                        fontSize: '1.2rem',
-                        borderRadius: '8px',
-                        '& .MuiAlert-icon': {
-                          fontSize: '1.5rem'
-                        },
-                        backgroundColor: isCorrect ? 'rgba(0, 200, 83, 0.15)' : 'rgba(255, 76, 48, 0.15)',
-                        color: isCorrect ? '#00c853' : '#ff4c30'
-                      }}
-                    >
-                      {feedback}
-                    </Alert>
-                  )}
                 </Stack>
               ) : (
                 <Typography variant="h6" textAlign="center" py={4} color="#f0f0f5">Loading...</Typography>
