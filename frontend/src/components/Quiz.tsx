@@ -105,6 +105,9 @@ const Quiz: React.FC = () => {
   const [questionHistory, setQuestionHistory] = useState<{ id: number, correct: boolean | null }[]>([])
   const [currentAnswered, setCurrentAnswered] = useState<{ id: number, correct: boolean | null } | null>(null)
   const [showSlide, setShowSlide] = useState(true)
+  const [timeLeft, setTimeLeft] = useState<number>(120) // 2 minutes in seconds
+  const [timerActive, setTimerActive] = useState<boolean>(false)
+  const [timedOut, setTimedOut] = useState<boolean>(false)
 
   const fetchQuestion = async () => {
     try {
@@ -135,6 +138,9 @@ const Quiz: React.FC = () => {
         setQuestion(data)
         setSelected(null)
         setIsCorrect(null) // Reset isCorrect when fetching a new question
+        setTimeLeft(120) // Reset timer to 2 minutes
+        setTimerActive(true) // Start timer
+        setTimedOut(false) // Reset timeout status
 
         // Start entry animation
         setShowSlide(true)
@@ -147,6 +153,29 @@ const Quiz: React.FC = () => {
   useEffect(() => {
     fetchQuestion()
   }, [])
+  
+  // Timer effect
+  useEffect(() => {
+    if (!timerActive || timeLeft <= 0) return
+    
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          // Time's up - show correct answer and mark as timed out
+          setTimedOut(true)
+          setIsCorrect(null)
+          if (question) {
+            setCurrentAnswered({ id: question.id, correct: null }) // mark as unanswered (null)
+          }
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    
+    return () => clearInterval(timer)
+  }, [timerActive, timeLeft, question])
 
   const checkAnswer = () => {
     if (!question || selected === null) return
@@ -187,16 +216,49 @@ const Quiz: React.FC = () => {
             gap: 1
           }}
         >
-          <Box display="flex" justifyContent="space-between" alignItems="center">
+          {/* Timer display with prominent size */}
+          <Box 
+            display="flex" 
+            justifyContent="center" 
+            alignItems="center"
+            mb={2}
+          >
+            <SvgIcon sx={{ color: '#9e9e9e', mr: 1, fontSize: 24 }}>
+              <path d="M11 2v2H9v2h2v2h2V6h2V4h-2V2h-2zm4.1 7.87c-.5-.51-1.18-.87-1.97-1.03v-3h-1v4.7c-1.07.83-1.35 2.05-.71 3.13c.54.9 1.6 1.33 2.58 1.03c1.05-.32 1.79-1.32 1.79-2.43c0-.64-.22-1.2-.59-1.67l4.09-4.08l-1.42-1.42l-2.77 2.77z" />
+            </SvgIcon>
+            <Typography color="#f0f0f5" fontSize="1.5rem" fontWeight="medium">
+              {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+            </Typography>
+          </Box>
+
+          {/* Question number */}
+          <Box 
+            display="flex" 
+            justifyContent="center" 
+            alignItems="center" 
+            mb={2}
+          >
+            <Typography color="#f0f0f5" fontWeight="medium" fontSize="1.2rem">
+              Question {questionHistory.length + 1}
+            </Typography>
+          </Box>
+
+          {/* Score counts with consistent ordering (correct, unanswered, incorrect) */}
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
             <Box display="flex" alignItems="center">
               <CheckCircleIcon sx={{ color: '#4caf50', mr: 1 }} />
               <Typography color="#f0f0f5">
                 {questionHistory.filter(q => q.correct).length + (currentAnswered?.correct ? 1 : 0)}
               </Typography>
             </Box>
-            <Typography color="#f0f0f5">
-              Question {questionHistory.length + 1}
-            </Typography>
+            <Box display="flex" alignItems="center">
+              <SvgIcon sx={{ color: '#ffc107', mr: 1 }}>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8c0-4.42 3.58-8 8-8s8 3.58 8 8c0 4.42-3.58 8-8 8z" />
+              </SvgIcon>
+              <Typography color="#f0f0f5">
+                {questionHistory.filter(q => q.correct === null).length + (currentAnswered?.correct === null ? 1 : 0)}
+              </Typography>
+            </Box>
             <Box display="flex" alignItems="center">
               <CancelIcon sx={{ color: '#f44336', mr: 1 }} />
               <Typography color="#f0f0f5">
@@ -205,7 +267,7 @@ const Quiz: React.FC = () => {
             </Box>
           </Box>
 
-          {/* Custom progress bar with green for correct and red for incorrect */}
+          {/* Custom progress bar with green for correct, yellow for unanswered, red for incorrect */}
           <Box
             sx={{
               height: 8,
@@ -225,6 +287,19 @@ const Quiz: React.FC = () => {
                   const correctCount = questionHistory.filter(q => q.correct).length + (currentAnswered?.correct ? 1 : 0);
                   const totalQuestions = questionHistory.length + (currentAnswered ? 1 : 0);
                   return totalQuestions > 0 ? `${(correctCount / totalQuestions) * 100}%` : '0%';
+                })(),
+              }}
+            />
+            {/* Yellow portion for unanswered questions */}
+            <Box
+              sx={{
+                height: '100%',
+                backgroundColor: '#ffc107',
+                width: (() => {
+                  const unansweredCount = questionHistory.filter(q => q.correct === null).length + 
+                                         (currentAnswered?.correct === null ? 1 : 0);
+                  const totalQuestions = questionHistory.length + (currentAnswered ? 1 : 0);
+                  return totalQuestions > 0 ? `${(unansweredCount / totalQuestions) * 100}%` : '0%';
                 })(),
               }}
             />
@@ -279,18 +354,18 @@ const Quiz: React.FC = () => {
                   <FormControl fullWidth>
                     <RadioGroup
                       value={selected}
-                      onChange={(e) => isCorrect === null && setSelected(parseInt(e.target.value))}
+                      onChange={(e) => isCorrect === null && !timedOut && setSelected(parseInt(e.target.value))}
                     >
                       {question.answers.map((ans) => {
                         const isSelected = selected === ans.id;
-                        const showCorrectIcon = isCorrect !== null && ans.correct;
+                        const showCorrectIcon = (isCorrect !== null || timedOut) && ans.correct;
                         const showIncorrectIcon = isCorrect !== null && isSelected && !ans.correct;
                         
                         return (
                           <FormControlLabel
                             key={ans.id}
                             value={ans.id}
-                            disabled={isCorrect !== null}
+                            disabled={isCorrect !== null || timedOut}
                             control={
                               <Radio 
                                 sx={{ 
@@ -344,7 +419,7 @@ const Quiz: React.FC = () => {
                     <Button
                       variant="contained"
                       onClick={checkAnswer}
-                      disabled={selected === null || isCorrect !== null}
+                      disabled={selected === null || isCorrect !== null || timedOut}
                       sx={{ 
                         padding: '12px 24px',
                         borderRadius: '8px',
@@ -365,19 +440,24 @@ const Quiz: React.FC = () => {
                       Submit
                     </Button>
                     <Button 
+                      variant="outlined"
                       onClick={fetchQuestion}
-                      disabled={isCorrect === null}
+                      disabled={isCorrect === null && !timedOut}
                       sx={{ 
                         padding: '12px 24px',
                         borderRadius: '8px',
+                        fontWeight: 'bold',
                         textTransform: 'none',
                         fontSize: '1.1rem',
-                        color: isCorrect !== null ? '#0070c9' : 'rgba(0, 112, 201, 0.3)',
+                        borderColor: (isCorrect !== null || timedOut) ? '#0070c9' : 'rgba(0, 112, 201, 0.3)',
+                        color: (isCorrect !== null || timedOut) ? '#0070c9' : 'rgba(0, 112, 201, 0.3)',
                         '&:hover': {
-                          backgroundColor: isCorrect !== null ? 'rgba(0, 112, 201, 0.1)' : 'transparent'
+                          backgroundColor: (isCorrect !== null || timedOut) ? 'rgba(0, 112, 201, 0.1)' : 'transparent',
+                          borderColor: '#0070c9'
                         },
                         '&:disabled': {
-                          color: 'rgba(255, 255, 255, 0.3)'
+                          color: 'rgba(255, 255, 255, 0.3)',
+                          borderColor: 'rgba(255, 255, 255, 0.3)'
                         }
                       }}
                     >
