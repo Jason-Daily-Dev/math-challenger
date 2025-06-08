@@ -6,4 +6,4 @@ echo "🚀 Initializing DB"
 python scripts/init_db.py
 
 echo "▶️ Starting FastAPI"
-exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir app
+exec python3 -m debugpy --listen 0.0.0.0:5678 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload

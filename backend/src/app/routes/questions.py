@@ -27,7 +27,9 @@ async def get_random_question(db: AsyncSession = Depends(get_db)):
     return {
         "id": question.id,
         "question": question.question,
-        "answers": [{"id": a.id, "answer": a.answer} for a in answers],
+        "answers": [
+            {"id": a.id, "answer": a.answer, "correct": a.correct} for a in answers
+        ],
     }
 
 

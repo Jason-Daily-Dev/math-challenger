@@ -18,6 +18,8 @@ asyncpg==0.30.0
     # via backend
 click==8.2.1
     # via uvicorn
+debugpy==1.8.14
+    # via backend
 dotenv==0.9.9
     # via backend
 fastapi==0.115.12
