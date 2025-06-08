@@ -205,25 +205,43 @@ const Quiz: React.FC = () => {
             </Box>
           </Box>
 
-          <LinearProgress
-            variant="determinate"
-            value={
-              // Calculate progress including currentAnswered
-              (() => {
-                const correctCount = questionHistory.filter(q => q.correct).length + (currentAnswered?.correct ? 1 : 0);
-                const totalQuestions = questionHistory.length + (currentAnswered ? 1 : 0);
-                return totalQuestions > 0 ? (correctCount / totalQuestions) * 100 : 0;
-              })()
-            }
+          {/* Custom progress bar with green for correct and red for incorrect */}
+          <Box
             sx={{
               height: 8,
               borderRadius: 4,
+              display: 'flex',
+              overflow: 'hidden',
+              width: '100%',
               backgroundColor: 'rgba(255,255,255,0.1)',
-              '& .MuiLinearProgress-bar': {
-                backgroundColor: '#4caf50'
-              }
             }}
-          />
+          >
+            {/* Green portion for correct answers */}
+            <Box
+              sx={{
+                height: '100%',
+                backgroundColor: '#4caf50',
+                width: (() => {
+                  const correctCount = questionHistory.filter(q => q.correct).length + (currentAnswered?.correct ? 1 : 0);
+                  const totalQuestions = questionHistory.length + (currentAnswered ? 1 : 0);
+                  return totalQuestions > 0 ? `${(correctCount / totalQuestions) * 100}%` : '0%';
+                })(),
+              }}
+            />
+            {/* Red portion for incorrect answers */}
+            <Box
+              sx={{
+                height: '100%',
+                backgroundColor: '#f44336',
+                width: (() => {
+                  const incorrectCount = questionHistory.filter(q => q.correct === false).length + 
+                                        (currentAnswered?.correct === false ? 1 : 0);
+                  const totalQuestions = questionHistory.length + (currentAnswered ? 1 : 0);
+                  return totalQuestions > 0 ? `${(incorrectCount / totalQuestions) * 100}%` : '0%';
+                })(),
+              }}
+            />
+          </Box>
         </Box>
 
         {/* Question card with slide animation */}
