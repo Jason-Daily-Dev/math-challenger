@@ -1,0 +1,16 @@
+FROM node:24-slim
+
+WORKDIR /app
+
+RUN rm -rf node_modules package-lock.json
+
+# Copy package files and install dependencies
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Copy source files
+COPY . .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host"]
