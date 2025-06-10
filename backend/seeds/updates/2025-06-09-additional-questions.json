@@ -1,0 +1,22 @@
+[
+  {
+    "question": "What is the derivative of f(x) = x³?",
+    "level": 11,
+    "answers": [
+      { "answer": "3x²", "correct": true },
+      { "answer": "3x", "correct": false },
+      { "answer": "x²", "correct": false },
+      { "answer": "3", "correct": false }
+    ]
+  },
+  {
+    "question": "Solve for x: |2x - 6| = 8",
+    "level": 11,
+    "answers": [
+      { "answer": "x = -1 or x = 7", "correct": true },
+      { "answer": "x = 1 or x = 7", "correct": false },
+      { "answer": "x = -1 or x = -7", "correct": false },
+      { "answer": "No solution", "correct": false }
+    ]
+  }
+]

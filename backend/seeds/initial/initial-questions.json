@@ -1,0 +1,182 @@
+[
+  {
+    "question": "Solve for x: 3x + 5 = 2x + 9",
+    "answers": [
+      { "answer": "x = 4", "correct": true },
+      { "answer": "x = -4", "correct": false },
+      { "answer": "x = 7", "correct": false },
+      { "answer": "x = -7", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the slope of the line y = -2x + 3?",
+    "answers": [
+      { "answer": "-2", "correct": true },
+      { "answer": "3", "correct": false },
+      { "answer": "-3", "correct": false },
+      { "answer": "2", "correct": false }
+    ]
+  },
+  {
+    "question": "What is (x + 2)(x - 5)?",
+    "answers": [
+      { "answer": "x² - 3x - 10", "correct": true },
+      { "answer": "x² + 3x - 10", "correct": false },
+      { "answer": "x² - 3x + 10", "correct": false },
+      { "answer": "x² + 3x + 10", "correct": false }
+    ]
+  },
+  {
+    "question": "What is sin(30°)?",
+    "answers": [
+      { "answer": "1/2", "correct": true },
+      { "answer": "√3/2", "correct": false },
+      { "answer": "√2/2", "correct": false },
+      { "answer": "1", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the discriminant of x² - 4x + 3?",
+    "answers": [
+      { "answer": "4", "correct": true },
+      { "answer": "16", "correct": false },
+      { "answer": "1", "correct": false },
+      { "answer": "7", "correct": false }
+    ]
+  },
+  {
+    "question": "Find the derivative of f(x) = 3x²",
+    "answers": [
+      { "answer": "6x", "correct": true },
+      { "answer": "3x", "correct": false },
+      { "answer": "x²", "correct": false },
+      { "answer": "6x²", "correct": false }
+    ]
+  },
+  {
+    "question": "Factor: x² - 9",
+    "answers": [
+      { "answer": "(x - 3)(x + 3)", "correct": true },
+      { "answer": "(x - 9)(x + 1)", "correct": false },
+      { "answer": "(x - 1)(x + 9)", "correct": false },
+      { "answer": "Prime", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the value of log₁₀(1000)?",
+    "answers": [
+      { "answer": "3", "correct": true },
+      { "answer": "2", "correct": false },
+      { "answer": "1", "correct": false },
+      { "answer": "10", "correct": false }
+    ]
+  },
+  {
+    "question": "If f(x) = 2x + 1 and g(x) = x², what is f(g(2))?",
+    "answers": [
+      { "answer": "9", "correct": true },
+      { "answer": "8", "correct": false },
+      { "answer": "6", "correct": false },
+      { "answer": "7", "correct": false }
+    ]
+  },
+  {
+    "question": "Which of the following is the equation of a circle?",
+    "answers": [
+      { "answer": "(x - 1)² + (y + 2)² = 25", "correct": true },
+      { "answer": "y = x² + 2", "correct": false },
+      { "answer": "y² = x", "correct": false },
+      { "answer": "x² + y = 9", "correct": false }
+    ]
+  },
+  {
+    "question": "Convert 180° to radians.",
+    "answers": [
+      { "answer": "π", "correct": true },
+      { "answer": "π/2", "correct": false },
+      { "answer": "2π", "correct": false },
+      { "answer": "π/3", "correct": false }
+    ]
+  },
+  {
+    "question": "Simplify: (2x²y)(3xy²)",
+    "answers": [
+      { "answer": "6x³y³", "correct": true },
+      { "answer": "6x²y²", "correct": false },
+      { "answer": "5x³y²", "correct": false },
+      { "answer": "5x²y³", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the solution to x² = 25?",
+    "answers": [
+      { "answer": "x = ±5", "correct": true },
+      { "answer": "x = 5", "correct": false },
+      { "answer": "x = -5", "correct": false },
+      { "answer": "x = 0", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the range of the function f(x) = x²?",
+    "answers": [
+      { "answer": "[0, ∞)", "correct": true },
+      { "answer": "(-∞, ∞)", "correct": false },
+      { "answer": "(-∞, 0]", "correct": false },
+      { "answer": "(0, ∞)", "correct": false }
+    ]
+  },
+  {
+    "question": "Which of the following is NOT a function?",
+    "answers": [
+      { "answer": "A vertical line", "correct": true },
+      { "answer": "y = x", "correct": false },
+      { "answer": "y = x²", "correct": false },
+      { "answer": "y = √x", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the value of cos(0)?",
+    "answers": [
+      { "answer": "1", "correct": true },
+      { "answer": "0", "correct": false },
+      { "answer": "-1", "correct": false },
+      { "answer": "Undefined", "correct": false }
+    ]
+  },
+  {
+    "question": "The vertex of y = (x - 2)² + 3 is:",
+    "answers": [
+      { "answer": "(2, 3)", "correct": true },
+      { "answer": "(-2, 3)", "correct": false },
+      { "answer": "(3, 2)", "correct": false },
+      { "answer": "(2, -3)", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the area of a triangle with base 10 and height 5?",
+    "answers": [
+      { "answer": "25", "correct": true },
+      { "answer": "50", "correct": false },
+      { "answer": "30", "correct": false },
+      { "answer": "15", "correct": false }
+    ]
+  },
+  {
+    "question": "If log₂(x) = 3, then x = ?",
+    "answers": [
+      { "answer": "8", "correct": true },
+      { "answer": "6", "correct": false },
+      { "answer": "9", "correct": false },
+      { "answer": "12", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the inverse of f(x) = x + 5?",
+    "answers": [
+      { "answer": "f⁻¹(x) = x - 5", "correct": true },
+      { "answer": "f⁻¹(x) = x + 5", "correct": false },
+      { "answer": "f⁻¹(x) = -x + 5", "correct": false },
+      { "answer": "f⁻¹(x) = -x - 5", "correct": false }
+    ]
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "question": "What is the value of x in the equation 3x + 7 = 22?",
+    "level": 10,
+    "answers": [
+      {
+        "answer": "5",
+        "correct": true
+      },
+      {
+        "answer": "4",
+        "correct": false
+      },
+      {
+        "answer": "7",
+        "correct": false
+      },
+      {
+        "answer": "8",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "question": "Solve for y: 2y - 8 = 16",
+    "level": 10,
+    "answers": [
+      {
+        "answer": "12",
+        "correct": true
+      },
+      {
+        "answer": "8",
+        "correct": false
+      },
+      {
+        "answer": "10",
+        "correct": false
+      },
+      {
+        "answer": "14",
+        "correct": false
+      }
+    ]
+  },
+  {
+    "question": "If a triangle has sides of lengths 5, 12, and 13, what type of triangle is it?",
+    "level": 10,
+    "answers": [
+      {
+        "answer": "Right triangle",
+        "correct": true
+      },
+      {
+        "answer": "Equilateral triangle",
+        "correct": false
+      },
+      {
+        "answer": "Isosceles triangle",
+        "correct": false
+      },
+      {
+        "answer": "Obtuse triangle",
+        "correct": false
+      }
+    ]
+  }
+]
