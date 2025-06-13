@@ -1,8 +1,8 @@
-"""create initial tables
+"""initial schema
 
-Revision ID: 833886e8846d
+Revision ID: fcc00cb22509
 Revises: 
-Create Date: 2025-06-08 16:33:26.669655
+Create Date: 2025-06-12 21:29:25.915199
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '833886e8846d'
+revision: str = 'fcc00cb22509'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,6 +25,8 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('question', sa.Text(), nullable=False),
     sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('level', sa.Integer(), nullable=False),
+    sa.CheckConstraint('level IN (10, 11, 12)', name='check_valid_level'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users',
