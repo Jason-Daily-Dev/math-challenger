@@ -8,13 +8,16 @@ services:
     container_name: math-backend
     command: ./entrypoint.sh
     volumes:
-      - ./backend/src/app:/app/app
+      - ./backend/src/app:/src/app
+    env_file:
+      - ./backend/.env
     environment:
       - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/mathchallenger
     depends_on:
       - db
     ports:
       - "8001:8000"
+      - "5678:5678"
 
   frontend:
     build:
