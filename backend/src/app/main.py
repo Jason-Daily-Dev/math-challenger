@@ -1,5 +1,5 @@
 import app.models
-from app.routes import docs, questions
+from app.routes import questions
 from app.routes.dependencies.auth import get_swagger_ui_oauth
 from fastapi import FastAPI
 

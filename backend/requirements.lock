@@ -36,8 +36,6 @@ dotenv==0.9.9
     # via backend
 fastapi==0.115.12
     # via backend
-greenlet==3.2.3
-    # via sqlalchemy
 h11==0.16.0
     # via uvicorn
 idna==3.10
