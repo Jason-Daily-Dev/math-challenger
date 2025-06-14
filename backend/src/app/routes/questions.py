@@ -1,13 +1,14 @@
 import random
 
-import app.models
 from app.db.session import get_db
 from app.models import Answer, Question
+from app.routes.dependencies.auth import get_token_validator
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-router = APIRouter()
+token_validator = get_token_validator()
+router = APIRouter(dependencies=[Depends(token_validator)])
 
 
 @router.get("/random")
