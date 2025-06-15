@@ -17,6 +17,7 @@ import {
   Slide,
   SvgIcon
 } from '@mui/material'
+import { useAuth0 } from '@auth0/auth0-react';
 
 // Custom SVG icons to replace Material UI icons
 const CheckCircleIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -98,6 +99,8 @@ interface Question {
 }
 
 const Quiz: React.FC = () => {
+  const { isAuthenticated, loginWithRedirect, isLoading, getAccessTokenSilently } = useAuth0();
+  
   const [question, setQuestion] = useState<Question | null>(null)
   const [selected, setSelected] = useState<number | null>(null)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
@@ -125,8 +128,12 @@ const Quiz: React.FC = () => {
 
       // Wait a bit for exit animation
       setTimeout(async () => {
+        const accessToken = await getAccessTokenSilently();
         const response = await fetch('/api/questions/random', {
-          headers: { 'Content-Type': 'application/json' }
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          }
         })
 
         if (!response.ok) {
@@ -184,6 +191,16 @@ const Quiz: React.FC = () => {
     
     // Store current answer but don't update history yet
     setCurrentAnswered({ id: question.id, correct: !!correct })
+  }
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      loginWithRedirect();
+    }
+  }, [isLoading, isAuthenticated, loginWithRedirect]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
